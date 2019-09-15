@@ -20,17 +20,21 @@ public class DragObject : MonoBehaviour,IDragHandler, IEndDragHandler, IBeginDra
     }
 
     public Action OnEndDragCallback;
+    public Action OnDragCallback;
+
 
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        gameObject.transform.SetAsLastSibling();
         _originalPosition = _rectTransform.localPosition;
     }
 
    public void OnDrag(PointerEventData eventData)
     {
           _rectTransform.localPosition += new Vector3(eventData.delta.x, eventData.delta.y, 0f);
-//        gameObject.GetComponent<RectTransform>().position += new Vector3(e.delta.x, e.delta.y, 0f);
+        OnDragCallback();
+          
     }
 
     public void OnEndDrag(PointerEventData eventData)
