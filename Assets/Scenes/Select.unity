@@ -1822,7 +1822,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 880, y: 310}
+  m_SizeDelta: {x: 870, y: 430}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1846274430
 MonoBehaviour:
@@ -1876,6 +1876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardList: []
+  SelectCardList: []
 --- !u!1 &1869553664
 GameObject:
   m_ObjectHideFlags: 0

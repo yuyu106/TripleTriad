@@ -6,7 +6,7 @@ public class CardManeger : MonoBehaviour
 {
     public List<GameObject> CardList;
 
-    private List<GameObject> SelectCardList;
+    public List<GameObject> SelectCardList;
 
     // Start is called before the first frame update
     void Start()

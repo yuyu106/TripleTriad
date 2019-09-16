@@ -16,13 +16,14 @@ public class CardData : MonoBehaviour
 
     public CardAttribute CardAttribute = new CardAttribute();
 
+    public bool isSelect;
+
     private int cardIndex;
 
 
     // Start is called before the first frame update
     void Awake()
     {
-        
 
     }
 
