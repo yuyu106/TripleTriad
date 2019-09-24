@@ -30,7 +30,10 @@ public class CardsInfomation : MonoBehaviour
         int row = targetCardIndex / gridNum;
         int col = targetCardIndex % gridNum;
 
+        Debug.Log(row + " " + col);
+
         CardAttribute targetCardAttribute = CardActionArray[col, row].GetComponent<CardAction>().CardAttribute;
+        Color targetColor = CardActionArray[col, row].GetComponent<Image>().color;
 
         //righit
         if (col + 1 < gridNum && CardActionArray[col + 1, row] != null)
@@ -38,10 +41,11 @@ public class CardsInfomation : MonoBehaviour
             CardAttribute rightCard = CardActionArray[col + 1, row].GetComponent<CardAction>().CardAttribute;
 
 
-            if (targetCardAttribute.Right > rightCard.Left)
+            if (targetCardAttribute.Right > rightCard.Left && targetCardAttribute.TeamColor != rightCard.TeamColor)
             {
 
-                CardActionArray[col + 1, row].GetComponent<Image>().sprite = rightCard.AnotherImage;
+                CardActionArray[col + 1, row].GetComponent<Image>().color = targetColor;
+                CardActionArray[col + 1, row].GetComponent<CardAction>().CardAttribute.TeamColor = targetCardAttribute.TeamColor;
             }
         }
 
@@ -51,10 +55,11 @@ public class CardsInfomation : MonoBehaviour
             CardAttribute leftCard = CardActionArray[col - 1, row].GetComponent<CardAction>().CardAttribute;
 
 
-            if (targetCardAttribute.Right > leftCard.Right)
+            if (targetCardAttribute.Left > leftCard.Right && targetCardAttribute.TeamColor != leftCard.TeamColor)
             {
 
-                CardActionArray[col - 1, row].GetComponent<Image>().sprite = leftCard.AnotherImage;
+                CardActionArray[col - 1, row].GetComponent<Image>().color = targetColor;
+                CardActionArray[col - 1, row].GetComponent<CardAction>().CardAttribute.TeamColor = targetCardAttribute.TeamColor;
             }
         }
 
@@ -63,11 +68,12 @@ public class CardsInfomation : MonoBehaviour
         {
             CardAttribute topCard = CardActionArray[col, row + 1].GetComponent<CardAction>().CardAttribute;
 
-
-            if (targetCardAttribute.Top > topCard.Bottom)
+            Debug.Log(targetCardAttribute.Top);
+            if (targetCardAttribute.Top > topCard.Bottom && targetCardAttribute.TeamColor != topCard.TeamColor)
             {
 
-                CardActionArray[col, row + 1].GetComponent<Image>().sprite = topCard.AnotherImage;
+               CardActionArray[col, row + 1].GetComponent<Image>().color = targetColor;
+                CardActionArray[col, row + 1].GetComponent<CardAction>().CardAttribute.TeamColor = targetCardAttribute.TeamColor;
             }
         }
 
@@ -77,10 +83,11 @@ public class CardsInfomation : MonoBehaviour
             CardAttribute bottomCard = CardActionArray[col, row - 1].GetComponent<CardAction>().CardAttribute;
 
 
-            if (targetCardAttribute.Bottom > bottomCard.Top)
+            if (targetCardAttribute.Bottom > bottomCard.Top && targetCardAttribute.TeamColor != bottomCard.TeamColor)
             {
 
-                CardActionArray[col, row - 1].GetComponent<Image>().sprite = bottomCard.AnotherImage;
+                CardActionArray[col, row - 1].GetComponent<Image>().color = targetColor;
+                CardActionArray[col, row - 1].GetComponent<CardAction>().CardAttribute.TeamColor = targetCardAttribute.TeamColor;
             }
         }
     }

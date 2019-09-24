@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class CardAction : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject _gameBoard;
-    [SerializeField]
-    private GameObject _cards;
+    public GameObject GameBoard;
+    public GameObject Cards;
 
     public CardAttribute CardAttribute;
 
     private int cardIndex;
-
+    [SerializeField]
+    private DragObject dragObject;
 
     // Start is called before the first frame update
     void Awake()
     {
-        gameObject.GetComponent<DragObject>().OnEndDragCallback = OnEndDragCard;
-        gameObject.GetComponent<DragObject>().OnDragCallback = OnDragCard;
-        CardAttribute = new CardAttribute();
-
+        /*
+                gameObject.GetComponent<DragObject>().OnEndDragCallback = OnEndDragCard;
+                gameObject.GetComponent<DragObject>().OnDragCallback = OnDragCard;
+                CardAttribute = new CardAttribute();
+        */
     }
 
     // Update is called once per frame
@@ -29,24 +29,31 @@ public class CardAction : MonoBehaviour
         
     }
 
-    private void  OnEndDragCard()
+    public void  OnEndDragCard(GameObject gameObject)
     {
+        TeamColor teamColor = gameObject.GetComponent<CardAction>().CardAttribute.TeamColor;
         RectTransform rectTransform = gameObject.GetComponent<DragObject>().RectTransform;
         Vector3 originalPosition = gameObject.GetComponent<DragObject>().OriginalPosition;
 
-        var position = _gameBoard.GetComponent<GameBoard>().NearestSquare(rectTransform.localPosition);
+        var position = GameBoard.GetComponent<GameBoard>().NearestSquare(rectTransform.localPosition);
 
         if (position.Item2)
         {
             rectTransform.localPosition = position.Item1;
             gameObject.GetComponent<DragObject>().enabled = false;
 
-            int gridNum = _gameBoard.GetComponent<GameBoard>().GridNum;
-            _cards.GetComponent<CardsInfomation>().CardActionArray[position.Item3 % gridNum, position.Item3 / gridNum] = gameObject;
+            int gridNum = GameBoard.GetComponent<GameBoard>().GridNum;
             cardIndex = position.Item3;
 
+            Debug.Log(cardIndex);
+            Cards.GetComponent<CardsInfomation>().CardActionArray[position.Item3 % gridNum, position.Item3 / gridNum] = gameObject;
+            Debug.Log(Cards.GetComponent<CardsInfomation>().CardActionArray[position.Item3 % gridNum, position.Item3 / gridNum].GetComponent<CardAction>().cardIndex);
+
+            Debug.Log(position.Item3 % gridNum + " " + position.Item3 / gridNum);
+
             //隣と比べたりする
-            _cards.GetComponent<CardsInfomation>().Compare(cardIndex);
+            Cards.GetComponent<CardsInfomation>().Compare(cardIndex);
+            GameBoard.GetComponent<GameMaster>().ChangeSelectableCards(teamColor);
 
 
         }
@@ -55,12 +62,24 @@ public class CardAction : MonoBehaviour
             rectTransform.localPosition = originalPosition;
         }
 
-        _gameBoard.GetComponent<GameBoard>().SquareCororRevert();
+        GameBoard.GetComponent<GameBoard>().SquareCororRevert();
     }
 
-    private void OnDragCard()
+    public void OnDragCard(GameObject gameObject)
     {
         RectTransform rectTransform = gameObject.GetComponent<DragObject>().RectTransform;
-        _gameBoard.GetComponent<GameBoard>().NearestSquareColorChange(rectTransform.localPosition);
+        GameBoard.GetComponent<GameBoard>().NearestSquareColorChange(rectTransform.localPosition);
+    }
+
+    public void SwichCardDragEnable(bool swich)
+    {
+        if (swich)
+        {
+            dragObject.enabled = true;
+        }
+        else
+        {
+            dragObject.enabled = false;
+        }
     }
 }

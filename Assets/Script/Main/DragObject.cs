@@ -19,27 +19,30 @@ public class DragObject : MonoBehaviour,IDragHandler, IEndDragHandler, IBeginDra
         get { return _originalPosition; }
     }
 
-    public Action OnEndDragCallback;
-    public Action OnDragCallback;
+    public Action<GameObject> OnEndDragCallback;
+    public Action<GameObject> OnDragCallback;
 
 
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         gameObject.transform.SetAsLastSibling();
+        GameObject parent = transform.parent.gameObject;
+        parent.transform.SetAsLastSibling();
+
         _originalPosition = _rectTransform.localPosition;
     }
 
    public void OnDrag(PointerEventData eventData)
     {
           _rectTransform.localPosition += new Vector3(eventData.delta.x, eventData.delta.y, 0f);
-        OnDragCallback();
+        OnDragCallback(gameObject);
           
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        OnEndDragCallback.Invoke();
+        OnEndDragCallback.Invoke(gameObject);
 
 
         

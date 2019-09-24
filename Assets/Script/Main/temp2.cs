@@ -16,7 +16,7 @@ public class temp2 : MonoBehaviour
         cardAttribute.Left = 2;
         cardAttribute.Top = 2;
         cardAttribute.Bottom = 2;
-        cardAttribute.AnotherImage = image2;
+
 
 
     }

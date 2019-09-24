@@ -15,7 +15,7 @@ public class temp1 : MonoBehaviour
         cardAttribute.Left = 1;
         cardAttribute.Top = 1;
         cardAttribute.Bottom = 1;
-        cardAttribute.AnotherImage = image;
+
         cardAttribute.TeamColor = TeamColor.BLUE;
 
     }

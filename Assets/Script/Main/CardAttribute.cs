@@ -11,7 +11,7 @@ public class CardAttribute
     public int Top;
     public int Bottom;
 
-    public Sprite AnotherImage;
+//    public Sprite AnotherImage;
     public TeamColor TeamColor;
 }
 
