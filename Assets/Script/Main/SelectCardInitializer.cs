@@ -27,7 +27,7 @@ public class SelectCardInitializer : MonoBehaviour
             card.GetComponent<CardAction>().CardAttribute = DataSender.Instance.data.SelectCardListRed[i];
             card.GetComponent<CardData>().TextSet();
             card.GetComponent<CardAction>().GameBoard = _gameBoard;
-            card.GetComponent<CardAction>().Cards = _redCards;
+            card.GetComponent<CardAction>().CardsInfomation = _redCards;
             card.GetComponent<OnClickListener>().OnPointerClickCallback = OnClickCallback;
             card.GetComponent<DragObject>().OnEndDragCallback = card.GetComponent<CardAction>().OnEndDragCard;
             card.GetComponent<DragObject>().OnDragCallback = card.GetComponent<CardAction>().OnDragCard;
@@ -43,7 +43,7 @@ public class SelectCardInitializer : MonoBehaviour
             card.GetComponent<CardAction>().CardAttribute = DataSender.Instance.data.SelectCardListBlue[i];
             card.GetComponent<CardData>().TextSet();
             card.GetComponent<CardAction>().GameBoard = _gameBoard;
-            card.GetComponent<CardAction>().Cards = _redCards;
+            card.GetComponent<CardAction>().CardsInfomation = _redCards;
             card.GetComponent<OnClickListener>().OnPointerClickCallback = OnClickCallback;
             card.GetComponent<DragObject>().OnEndDragCallback = card.GetComponent<CardAction>().OnEndDragCard;
             card.GetComponent<DragObject>().OnDragCallback = card.GetComponent<CardAction>().OnDragCard;

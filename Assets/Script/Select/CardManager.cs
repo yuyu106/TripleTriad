@@ -2,28 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardManeger : MonoBehaviour
+public class CardManager : MonoBehaviour
 {
     //全部のカードのデータ持ってる
-    private List<GameObject> CardList;
+    private List<CardAttribute> _cardList;
 
     //赤で選択されたカード情報
     private List<CardAttribute> _selectCardListRed = new List<CardAttribute>();
-    public List<CardAttribute> SelectCardListRed
+/*    public List<CardAttribute> SelectCardListRed
     {
         get
         {
             return _selectCardListRed;
         }
     }
-
+*/
     //青で追加されたカード情報
     private List<CardAttribute> _selectCardListBlue = new List<CardAttribute>();
-    private List<CardAttribute> SelectCardListBlue
+/*    private List<CardAttribute> SelectCardListBlue
     {
         get
         {
             return _selectCardListBlue;
+        }
+    }
+*/
+    
+
+  
+    //対応するリストの指定された値を返す
+    public CardAttribute GetCardAttributeInSelectCardList(TeamColor teamColor, int num)
+    {
+        switch (teamColor)
+        {
+            case TeamColor.RED:
+                return _selectCardListRed[num];
+            case TeamColor.BLUE:
+                return _selectCardListBlue[num];
+            default:
+                return null;
         }
     }
 
@@ -42,9 +59,9 @@ public class CardManeger : MonoBehaviour
     }
 
     //対応するリストに追加
-    public void AddSelectCardList(TeamColor teamColor, CardAttribute cardAttribute)
+    public void AddSelectCardList(CardAttribute cardAttribute)
     {
-        switch (teamColor)
+        switch (cardAttribute.TeamColor)
         {
             case TeamColor.RED:
                 _selectCardListRed.Add(cardAttribute);
@@ -54,10 +71,14 @@ public class CardManeger : MonoBehaviour
                 break;
         }
     }
-    //対応するリストから削除
-    public void RemoveSelectCardList(TeamColor teamColor, CardAttribute cardAttribute)
+    public void AddCardList(CardAttribute cardAttribute)
     {
-        switch (teamColor)
+        _cardList.Add(cardAttribute);
+    }
+    //対応するリストから削除
+    public void RemoveSelectCardList(CardAttribute cardAttribute)
+    {
+        switch (cardAttribute.TeamColor)
         {
             case TeamColor.RED:
                 _selectCardListRed.Remove(cardAttribute);
@@ -68,18 +89,6 @@ public class CardManeger : MonoBehaviour
         }
     }
 
-    private TeamColor _teamColor;
-    public TeamColor TeamColor
-    {
-        get
-        {
-            return _teamColor;
-        }
-        set
-        {
-            _teamColor = value; 
-        }
-    }
 
     private void Awake()
     {

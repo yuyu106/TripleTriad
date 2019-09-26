@@ -5,7 +5,7 @@ using UnityEngine;
 public class DataSender
 {
 
-    public CardManeger data;
+    public CardManager data;
 
     private static DataSender _instance;
 

@@ -11,7 +11,7 @@ public class ButtonAction : MonoBehaviour
     [SerializeField]
     private OnClickListener _onClickListener;   //クリックしたときに呼ばれるクラス
     [SerializeField]
-    private CardManeger _cardManeger;   
+    private CardManager _cardManeger;   
 
 
     void Start()
@@ -36,17 +36,19 @@ public class ButtonAction : MonoBehaviour
      */
     private void OnClickCallback(GameObject gameObject)
     {
+        TeamColor teamColor = _cardManeger.TeamColor;
 
-
-        if (_cards.GetComponent<CardManeger>().TeamColor == TeamColor.BLUE)
+        if (teamColor == TeamColor.BLUE)
         {
-            DataSender.Instance.data.SelectCardListBlue = _cards.GetComponent<CardManeger>().SelectCardListBlue;
-
+            for (int i = 0; i < _cardManeger.SelectCardListCount(teamColor); i++)
+            {
+                DataSender.Instance.data.AddSelectCardList(teamColor, _cardManeger.GetCardAttributeInSelectCardList(teamColor, i));
+            }
             SceneManager.LoadScene("Main");
         }
         else
         {
-            DataSender.Instance.data = _cards.GetComponent<CardManeger>();
+            DataSender.Instance.data = _cards.GetComponent<CardManager>();
     
             SceneManager.LoadScene("SelectBlue");
         }
