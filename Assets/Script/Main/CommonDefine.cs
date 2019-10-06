@@ -5,5 +5,6 @@ using UnityEngine;
 public enum TeamColor
 {
     RED,
-    BLUE
+    BLUE,
+    WHITE
 }

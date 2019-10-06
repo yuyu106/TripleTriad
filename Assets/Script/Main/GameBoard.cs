@@ -13,16 +13,15 @@ public class GameBoard : MonoBehaviour
     private float _width;
     private float _height;
 
-    [SerializeField]
     private int _gridNum;
-    public int GridNum
-    {
-        get { return _gridNum; }
-    }
 
     private bool[,] _usingGridArray;
 
-    public GameObject[,] BoardObjectArray;
+    private Image[,] _boardImageArray;
+    public void SetBoardImageArray(Image[,] images)
+    {
+        _boardImageArray = images;
+    }
 
     public Color InitColor;     //最初の色
     private int _targetBoardIndex;
@@ -59,7 +58,7 @@ public class GameBoard : MonoBehaviour
         if (x.Item2 && y.Item2 && _usingGridArray[x.Item3, y.Item3] &&(x.Item3 + (y.Item3 * _gridNum)) != _targetBoardIndex)
         {
             SquareCororRevert();
-            BoardObjectArray[x.Item3, y.Item3].GetComponent<Image>().color = new Color(1.0f, 0.7127465f, 0.7019608f, 1.0f);
+            _boardImageArray[x.Item3, y.Item3].color = new Color(1.0f, 0.7127465f, 0.7019608f, 1.0f);
             _targetBoardIndex = x.Item3 + (y.Item3 * _gridNum);
         }
 
@@ -75,7 +74,7 @@ public class GameBoard : MonoBehaviour
     {
         if (_targetBoardIndex != -1)
         {
-            BoardObjectArray[_targetBoardIndex % _gridNum, _targetBoardIndex / _gridNum].GetComponent<Image>().color = InitColor;
+            _boardImageArray[_targetBoardIndex % _gridNum, _targetBoardIndex / _gridNum].color = InitColor;
         }
     }
 
@@ -121,5 +120,10 @@ public class GameBoard : MonoBehaviour
             }
         }
         return (0, false, 0);
+    }
+
+    public void SetGridNum(int gridNum)
+    {
+        _gridNum = gridNum;
     }
 }

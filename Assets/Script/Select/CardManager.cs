@@ -4,8 +4,19 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
+
+    [SerializeField]
+    TeamColor _teamColor;
+
+    public TeamColor TeamColor
+    {
+        get
+        {
+            return _teamColor;
+        }
+    }
     //全部のカードのデータ持ってる
-    private List<CardAttribute> _cardList;
+    private List<CardAttribute> _cardList = new List<CardAttribute>();
 
     //赤で選択されたカード情報
     private List<CardAttribute> _selectCardListRed = new List<CardAttribute>();
@@ -47,6 +58,7 @@ public class CardManager : MonoBehaviour
     //対応するリストの長さを返す
     public int SelectCardListCount(TeamColor teamColor)
     {
+        
         switch (teamColor)
         {
             case TeamColor.RED:

@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class CardAction : MonoBehaviour
 {
     private GameBoard _gameBoard;
     private GameMaster _gameMaster;
     private CardManager _cardManager;
-
-    [SerializeField]
     private ButtonAction _buttonAction;
+
+
     [SerializeField]
     private EventTrigger _event;
     [SerializeField]
     private OnClickListener _onClickListener;
 
-    public CardAttribute CardAttribute;
+    public CardAttribute CardAttribute = new CardAttribute();
 
     public bool IsSelect;
 
@@ -28,8 +29,11 @@ public class CardAction : MonoBehaviour
     [SerializeField]
     private CardAction _cardAction;
 
+    [SerializeField]
+    private RectTransform _rectTransform;
 
 
+    bool _isFripping = true;
 
     //カードに引っ付いてるテキスト
     [SerializeField]
@@ -47,9 +51,10 @@ public class CardAction : MonoBehaviour
 
 
     //コンポーネント色々設定する
-    public void Initialize(CardManager cardManager)
+    public void Initialize(CardManager cardManager, ButtonAction buttonAction)
     {
         _cardManager = cardManager;
+        _buttonAction = buttonAction;
     }
     public void Initialize(GameBoard gameBoard, GameMaster gameMaster)
     {
@@ -100,13 +105,12 @@ public class CardAction : MonoBehaviour
             _dragObject.enabled = false;
 
             //gridNum * gridNum = タイルの数 (正方形とします)
-            int gridNum = _gameBoard.GridNum;
+            int gridNum = _gameMaster.GridNum;
             cardIndex = position.Item3;
 
             //タイルと対応する番号に情報入れてあげる
-            _gameMaster.CardAttributeOnTileArray[position.Item3 % gridNum, position.Item3 / gridNum] = CardAttribute;
-            Debug.Log(_gameMaster.CardAttributeOnTileArray[position.Item3 % gridNum, position.Item3 / gridNum]);
-
+            _gameMaster.AddCardAttributeOnTileArray(position.Item3, this);
+         
             //隣と比べたりする
             _gameMaster.Compare(cardIndex);
             //プレイヤー交代
@@ -157,6 +161,11 @@ public class CardAction : MonoBehaviour
         _dragObject.OnDragCallback = OnDragCard;
         _dragObject.OnEndDragCallback = OnEndDragCard;
     }
+    //Drag無効
+    public void InvalidDrag()
+    {
+        _dragObject.enabled = false;
+    }
 
     //ClickのCallback
     public void OnPointerClickCallback(GameObject gameObject)
@@ -165,7 +174,7 @@ public class CardAction : MonoBehaviour
         {
             Debug.Log("isSelect = true");
             //選択解除なので真っ白にする
-            _cardImage.color = new Color(1f, 1f, 1f, 1f);
+            ChangeCardColor(TeamColor.WHITE);
             //選択されたカードを選択リストから消す
             _cardManager.RemoveSelectCardList(CardAttribute);
 
@@ -174,19 +183,13 @@ public class CardAction : MonoBehaviour
         //５枚までしか選択できない
         else if (_cardManager.SelectCardListCount(CardAttribute.TeamColor) < 5)           
         {
-            Debug.Log("isSelect = false");
+
 
             //選択済み
             IsSelect = true;
 
-            if (CardAttribute.TeamColor == TeamColor.RED)
-            {
-                _cardImage.color = new Color(1f, 0.4009434f, 0.4009434f, 1f);
-            }
-            else
-            {
-                _cardImage.color = new Color(0.4f, 0.5180836f, 1f, 1f);
-            }
+            ChangeCardColor(CardAttribute.TeamColor);
+
             //選択済みリストに追加
             _cardManager.AddSelectCardList(CardAttribute);
 
@@ -206,6 +209,51 @@ public class CardAction : MonoBehaviour
     {
         _event.enabled = false;
     }
+
+    //カードの色変える
+    public void ChangeCardColor(TeamColor teamColor)
+    {
+        switch (teamColor)
+        {
+            case TeamColor.RED:
+                _cardImage.color = new Color(1f, 0.4009434f, 0.4009434f, 1f);
+                break;
+
+            case TeamColor.BLUE:
+                _cardImage.color = new Color(0.4f, 0.5180836f, 1f, 1f);
+                break;
+
+            case TeamColor.WHITE:
+                _cardImage.color = new Color(1f, 1f, 1f, 1f);
+                break;
+
+        }
+    }
+
+    //カードを裏返す
+    public bool FripCard(TeamColor newTeam)
+    {
+        var seq = DOTween.Sequence();
+
+
+        seq.Append(
+            _rectTransform
+            .DOLocalRotate(new Vector3(0, 90, 0), 0.3f, RotateMode.FastBeyond360)
+            .OnComplete(() => { ChangeCardColor(newTeam); })
+        );
+
+        seq.Append(
+           _rectTransform
+           .DOLocalRotate(new Vector3(0, -90, 0), 0.3f, RotateMode.FastBeyond360)
+           .SetRelative(true)
+           .OnComplete(() => { _gameMaster.isFripping = false;})
+       );
+
+        return true;
+    }
+
+
+
 
 
 }

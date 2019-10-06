@@ -169,7 +169,6 @@ GameObject:
   - component: {fileID: 2501566818638301567}
   - component: {fileID: 2501566818638301561}
   - component: {fileID: 2501566818638301566}
-  - component: {fileID: 2677398178398169544}
   - component: {fileID: 7504681134765621355}
   - component: {fileID: 8083597691676015414}
   - component: {fileID: 1497378377980865127}
@@ -242,23 +241,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!114 &2677398178398169544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2501566818638301564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91ea9db354c9e1e428d1a58e9a4874e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _topText: {fileID: 2501566820037862616}
-  _righitText: {fileID: 1638645701907203445}
-  _bottomText: {fileID: 2221547103910065724}
-  _leftText: {fileID: 1889437687296040748}
-  isSelect: 0
 --- !u!114 &7504681134765621355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -283,9 +265,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b6e2f812fb9dfb44bb97145a335eb05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameBoard: {fileID: 0}
-  Cards: {fileID: 0}
-  dragObject: {fileID: 1224664760035704531}
+  _event: {fileID: 6187860588191585321}
+  _onClickListener: {fileID: 7504681134765621355}
+  IsSelect: 0
+  _dragObject: {fileID: 1224664760035704531}
+  _cardAction: {fileID: 8083597691676015414}
+  _rectTransform: {fileID: 2501566818638301567}
+  _topText: {fileID: 2501566820037862616}
+  _righitText: {fileID: 1638645701907203445}
+  _bottomText: {fileID: 2221547103910065724}
+  _leftText: {fileID: 1889437687296040748}
+  _cardImage: {fileID: 2501566818638301566}
 --- !u!61 &1497378377980865127
 BoxCollider2D:
   m_ObjectHideFlags: 0

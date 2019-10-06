@@ -42,13 +42,13 @@ public class ButtonAction : MonoBehaviour
         {
             for (int i = 0; i < _cardManeger.SelectCardListCount(teamColor); i++)
             {
-                DataSender.Instance.data.AddSelectCardList(teamColor, _cardManeger.GetCardAttributeInSelectCardList(teamColor, i));
+                DataSender.Instance.data.AddSelectCardList(_cardManeger.GetCardAttributeInSelectCardList(teamColor, i));
             }
             SceneManager.LoadScene("Main");
         }
         else
         {
-            DataSender.Instance.data = _cards.GetComponent<CardManager>();
+            DataSender.Instance.data = _cardManeger;
     
             SceneManager.LoadScene("SelectBlue");
         }

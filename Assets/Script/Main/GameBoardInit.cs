@@ -6,28 +6,26 @@ using UnityEngine.UI;
 public class GameBoardInit : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _gameBoard;
+    private GameBoard _gameBoard;
     [SerializeField]
-    private GameObject _boardPrefab;
-
+    private Image _boardPrefab;
 
     // Start is called before the first frame update
-    void Start()
+    public void GameBoardInitialize(int gridNum)
     {
-        int gridNum = _gameBoard.GetComponent<GameBoard>().GridNum;
-        GameObject[,] boardObjectArray = new GameObject[gridNum, gridNum];
+        Image[,] boardImageArray = new Image[gridNum, gridNum];
 
-        _gameBoard.GetComponent<GameBoard>().InitColor = _boardPrefab.GetComponent<Image>().color;
+        _gameBoard.InitColor = _boardPrefab.color;
 
         for (int i = 0; i < gridNum; i++)
         {
             for (int j = 0; j < (gridNum); j++)
             {
-                GameObject board = Instantiate(_boardPrefab, _gameBoard.transform);
-                boardObjectArray[j, gridNum - 1 - i] = board;
+                Image board = Instantiate(_boardPrefab, _gameBoard.transform);
+                boardImageArray[j, gridNum - 1 - i] = board;
             }
         }
-        _gameBoard.GetComponent<GameBoard>().BoardObjectArray = boardObjectArray;
+        _gameBoard.SetBoardImageArray(boardImageArray);
     }
 
     // Update is called once per frame

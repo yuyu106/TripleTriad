@@ -13,6 +13,9 @@ public class CardInitializer : MonoBehaviour
     private CardAction _cardPrefab;
     [SerializeField]
     private CardManager _cardManager;
+    [SerializeField]
+    private ButtonAction _buttonAction;
+
 
 
 
@@ -24,8 +27,6 @@ public class CardInitializer : MonoBehaviour
 
     private CardAction _cardAction;
 
-    [SerializeField]
-    private TeamColor _teamColor;
 
     // Start is called before the first frame update
     void Start()
@@ -54,18 +55,19 @@ public class CardInitializer : MonoBehaviour
             _cardAction.CardTextSet();
 
             //チームカラー
-            _cardAction.CardAttribute.TeamColor = _teamColor;
+            _cardAction.CardAttribute.TeamColor = _cardManager.TeamColor;
 
             //まだ選択されてない
             _cardAction.IsSelect = false;
 
-            _cardAction.Initialize(_cardManager);
+            _cardAction.Initialize(_cardManager, _buttonAction);
 
             //クリックとドラッグ
             _cardAction.SetOnClickCallback();
             _cardAction.SwichCardDragEnable(false);
 
             _cardManager.AddCardList(_cardAction.CardAttribute);
+
 
         }
     }

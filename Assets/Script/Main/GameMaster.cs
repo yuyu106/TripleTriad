@@ -13,23 +13,48 @@ public class GameMaster : MonoBehaviour
     private Text _redScoreText;
     [SerializeField]
     private Text _blueScoreText;
-
-    public CardAttribute[,] CardAttributeOnTileArray;
+    [SerializeField]
+    private Text _tarnText;
+    
 
     [SerializeField]
-    private GameObject GameBoard;
+    private GameBoard _gameBoard;
+    [SerializeField]
+    private GameBoardInit _gameBoardInit;
 
-    private int gridNum;
+    public bool isFripping = false;
 
-    public CardAction[] CardsArray = new CardAction[10];
+    [SerializeField]
+    private int _gridNum;
+    public int GridNum
+    {
+        get
+        {
+            return _gridNum;
+        }
+    }
+
+    //全てのカード情報
+    private CardAction[] _cardsArray;
+    public void SetCardsArray(CardAction[] cardActions)
+    {
+        _cardsArray = cardActions;
+    }
+
+    //選択されたカードの情報
+    private CardAction[,] _cardAttributeOnTileArray;
+    public void AddCardAttributeOnTileArray(int index, CardAction cardAction)
+    {
+        _cardAttributeOnTileArray[index % _gridNum, index / _gridNum] = cardAction;
+    }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        gridNum = GameBoard.GetComponent<GameBoard>().GridNum;
-
-        CardActionArray = new GameObject[gridNum, gridNum];
-
+        _gameBoard.SetGridNum(_gridNum);
+        _gameBoardInit.GameBoardInitialize(_gridNum);
+        _cardAttributeOnTileArray = new CardAction[_gridNum , _gridNum];
+        
     }
 
     // Update is called once per frame
@@ -40,19 +65,45 @@ public class GameMaster : MonoBehaviour
 
     public void ChangeSelectableCards(TeamColor teamColor)
     {
-         foreach (CardAction i in CardsArray)
+         foreach (CardAction card in _cardsArray)
          {
-            if (i.CardAttribute.TeamColor == teamColor)
+            if (card.CardAttribute.TeamColor == teamColor)
             {
-                i.SwichCardDragEnable(false);
+                card.SwichCardDragEnable(false);
             }
             else
             {
-                i.SwichCardDragEnable(true);
+                card.SwichCardDragEnable(true);
             }
           }
 
+
+        StartCoroutine(TextSetCoRoutine(teamColor));
+
+    }
+
+    private IEnumerator TextSetCoRoutine(TeamColor teamColor)
+    {
+        while (isFripping != false)
+        {
+            yield return null;
+        }
+
+        if (teamColor == TeamColor.RED)
+        {
+            _tarnText.text = "2Pのターン";
+            _tarnText.color = new Color(0.4f, 0.5180836f, 1, 1);
+
+        }
+        else
+        {
+            _tarnText.text = "1Pのターン";
+            _tarnText.color = new Color(1, 0.4009434f, 0.4009434f, 1);
+        }
+
         ScoreTextSetter();
+
+        yield break;
 
     }
 
@@ -62,7 +113,7 @@ public class GameMaster : MonoBehaviour
         int blueCardNum = 0;
 
 
-        foreach (CardAction i in CardsArray)
+        foreach (CardAction i in _cardsArray)
         {
             if (i.CardAttribute.TeamColor == TeamColor.RED)
             {
@@ -79,71 +130,71 @@ public class GameMaster : MonoBehaviour
         _blueScoreText.text = blueCardNum.ToString();
     }
 
-
+    //隣り合うカードと比較
     public void Compare(int targetCardIndex)
     {
-        int row = targetCardIndex / gridNum;
-        int col = targetCardIndex % gridNum;
+        int row = targetCardIndex / _gridNum;
+        int col = targetCardIndex % _gridNum;
 
         Debug.Log(row + " " + col);
 
-        CardAttribute targetCardAttribute = CardActionArray[col, row].GetComponent<CardAction>().CardAttribute;
-        Color targetColor = CardActionArray[col, row].GetComponent<Image>().color;
+        CardAttribute targetCardAttribute = _cardAttributeOnTileArray[col, row].CardAttribute;
 
         //righit
-        if (col + 1 < gridNum && CardActionArray[col + 1, row] != null)
+        if (col + 1 < _gridNum && _cardAttributeOnTileArray[col + 1, row] != null)
         {
-            CardAttribute rightCard = CardActionArray[col + 1, row].GetComponent<CardAction>().CardAttribute;
+            CardAction rightCard = _cardAttributeOnTileArray[col + 1, row];
 
 
-            if (targetCardAttribute.Right > rightCard.Left && targetCardAttribute.TeamColor != rightCard.TeamColor)
+            if (targetCardAttribute.Right > rightCard.CardAttribute.Left && targetCardAttribute.TeamColor != rightCard.CardAttribute.TeamColor)
             {
-
-                CardActionArray[col + 1, row].GetComponent<Image>().color = targetColor;
-                CardActionArray[col + 1, row].GetComponent<CardAction>().CardAttribute.TeamColor = targetCardAttribute.TeamColor;
+                ChangeNextCardColor(targetCardAttribute, rightCard);
             }
         }
 
         //left
-        if (col - 1 >= 0 && CardActionArray[col - 1, row] != null)
+        if (col - 1 >= 0 && _cardAttributeOnTileArray[col - 1, row] != null)
         {
-            CardAttribute leftCard = CardActionArray[col - 1, row].GetComponent<CardAction>().CardAttribute;
+            CardAction leftCard = _cardAttributeOnTileArray[col - 1, row];
 
 
-            if (targetCardAttribute.Left > leftCard.Right && targetCardAttribute.TeamColor != leftCard.TeamColor)
+            if (targetCardAttribute.Left > leftCard.CardAttribute.Right && targetCardAttribute.TeamColor != leftCard.CardAttribute.TeamColor)
             {
-
-                CardActionArray[col - 1, row].GetComponent<Image>().color = targetColor;
-                CardActionArray[col - 1, row].GetComponent<CardAction>().CardAttribute.TeamColor = targetCardAttribute.TeamColor;
+                ChangeNextCardColor(targetCardAttribute, leftCard);
             }
         }
 
         //top
-        if (row + 1 < gridNum && CardActionArray[col, row + 1] != null)
+        if (row + 1 < _gridNum && _cardAttributeOnTileArray[col, row + 1] != null)
         {
-            CardAttribute topCard = CardActionArray[col, row + 1].GetComponent<CardAction>().CardAttribute;
+            CardAction topCard = _cardAttributeOnTileArray[col, row + 1];
 
-            Debug.Log(targetCardAttribute.Top);
-            if (targetCardAttribute.Top > topCard.Bottom && targetCardAttribute.TeamColor != topCard.TeamColor)
+            if (targetCardAttribute.Top > topCard.CardAttribute. Bottom && targetCardAttribute.TeamColor != topCard.CardAttribute.TeamColor)
             {
 
-                CardActionArray[col, row + 1].GetComponent<Image>().color = targetColor;
-                CardActionArray[col, row + 1].GetComponent<CardAction>().CardAttribute.TeamColor = targetCardAttribute.TeamColor;
+                ChangeNextCardColor(targetCardAttribute, topCard);
             }
         }
 
         //bottom
-        if (row - 1 >= 0 && CardActionArray[col, row - 1] != null)
+        if (row - 1 >= 0 && _cardAttributeOnTileArray[col, row - 1] != null)
         {
-            CardAttribute bottomCard = CardActionArray[col, row - 1].GetComponent<CardAction>().CardAttribute;
+            CardAction bottomCard = _cardAttributeOnTileArray[col, row - 1];
 
 
-            if (targetCardAttribute.Bottom > bottomCard.Top && targetCardAttribute.TeamColor != bottomCard.TeamColor)
+            if (targetCardAttribute.Bottom > bottomCard.CardAttribute.Top && targetCardAttribute.TeamColor != bottomCard.CardAttribute.TeamColor)
             {
-
-                CardActionArray[col, row - 1].GetComponent<Image>().color = targetColor;
-                CardActionArray[col, row - 1].GetComponent<CardAction>().CardAttribute.TeamColor = targetCardAttribute.TeamColor;
+                ChangeNextCardColor(targetCardAttribute, bottomCard);
             }
         }
+
+    }
+
+    private void ChangeNextCardColor(CardAttribute target , CardAction next)
+    {
+        isFripping = true;
+        next.FripCard(target.TeamColor);
+
+        next.CardAttribute.TeamColor = target.TeamColor;
     }
 }
