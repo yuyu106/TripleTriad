@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class GameMaster : MonoBehaviour
 {
@@ -15,6 +17,11 @@ public class GameMaster : MonoBehaviour
     private Text _blueScoreText;
     [SerializeField]
     private Text _tarnText;
+    [SerializeField]
+    private RectTransform _tarnBoard;
+
+    private Vector3 _tarnBoardOriginPos;
+    private bool _isFirstTarn = true;
     
 
     [SerializeField]
@@ -23,6 +30,7 @@ public class GameMaster : MonoBehaviour
     private GameBoardInit _gameBoardInit;
 
     public bool isFripping = false;
+    private int _remainingBoard;
 
     [SerializeField]
     private int _gridNum;
@@ -54,7 +62,8 @@ public class GameMaster : MonoBehaviour
         _gameBoard.SetGridNum(_gridNum);
         _gameBoardInit.GameBoardInitialize(_gridNum);
         _cardAttributeOnTileArray = new CardAction[_gridNum , _gridNum];
-        
+        _tarnBoardOriginPos = _tarnBoard.localPosition;
+        _remainingBoard = _gridNum * _gridNum;
     }
 
     // Update is called once per frame
@@ -63,48 +72,78 @@ public class GameMaster : MonoBehaviour
         
     }
 
+    //順番交代
     public void ChangeSelectableCards(TeamColor teamColor)
     {
-         foreach (CardAction card in _cardsArray)
-         {
-            if (card.CardAttribute.TeamColor == teamColor)
+        if (_isFirstTarn == true)
+        {
+            ScoreTextSetter();
+            _isFirstTarn = false;
+        }
+        else if(_remainingBoard > 1)
+        {
+            Debug.Log("置ける場所　" + _remainingBoard + "箇所");
+            _remainingBoard--;
+
+            foreach (CardAction card in _cardsArray)
             {
-                card.SwichCardDragEnable(false);
+                if (card.CardAttribute.TeamColor == teamColor)
+                {
+                    card.SwichCardDragEnable(false);
+                }
+                else
+                {
+                    card.SwichCardDragEnable(true);
+                }
             }
-            else
-            {
-                card.SwichCardDragEnable(true);
-            }
-          }
+            StartCoroutine(TextSetCoRoutine(teamColor));
+        }
+        else
+        {
+            StartCoroutine(LoadSceneCoRoutine());
+        }
+        
 
+    }
+    private IEnumerator LoadSceneCoRoutine()
+    {
+        yield return new WaitWhile(() => isFripping != false);
+        ScoreSender score = ScoreSender.Instance;
+        ScoreTextSetter();
+        score.RedScore = _redScoreText.text;
+        score.BlueScore = _blueScoreText.text;
 
-        StartCoroutine(TextSetCoRoutine(teamColor));
-
+        SceneManager.LoadScene("Result");
     }
 
     private IEnumerator TextSetCoRoutine(TeamColor teamColor)
     {
-        while (isFripping != false)
+        _tarnBoard.DOLocalMoveY(700f, 0.3f)
+        .OnComplete(() =>
         {
-            yield return null;
-        }
+            if (teamColor == TeamColor.RED)
+            {
+                _tarnText.text = "2Pのターン";
+                _tarnText.color = new Color(0.4f, 0.5180836f, 1, 1);
 
-        if (teamColor == TeamColor.RED)
-        {
-            _tarnText.text = "2Pのターン";
-            _tarnText.color = new Color(0.4f, 0.5180836f, 1, 1);
+            }
+            else
+            {
+                _tarnText.text = "1Pのターン";
+                _tarnText.color = new Color(1, 0.4009434f, 0.4009434f, 1);
+            }
 
-        }
-        else
-        {
-            _tarnText.text = "1Pのターン";
-            _tarnText.color = new Color(1, 0.4009434f, 0.4009434f, 1);
-        }
+            _tarnBoard.DOLocalMove(_tarnBoardOriginPos, 0.3f);
+
+        });
+
+
+        yield return new WaitWhile(() => isFripping != false);
 
         ScoreTextSetter();
 
         yield break;
-
+        
     }
 
     private void ScoreTextSetter()

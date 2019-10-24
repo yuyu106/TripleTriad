@@ -33,7 +33,7 @@ public class CardAction : MonoBehaviour
     private RectTransform _rectTransform;
 
 
-    bool _isFripping = true;
+    private bool _isFripping = true;
 
     //カードに引っ付いてるテキスト
     [SerializeField]
