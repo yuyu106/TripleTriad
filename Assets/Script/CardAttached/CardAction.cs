@@ -49,6 +49,9 @@ public class CardAction : MonoBehaviour
     [SerializeField]
     private Image _cardImage;
 
+    [SerializeField]
+    private AudioSource _fripSE;
+
 
     //コンポーネント色々設定する
     public void Initialize(CardManager cardManager, ButtonAction buttonAction)
@@ -235,6 +238,7 @@ public class CardAction : MonoBehaviour
     {
         var seq = DOTween.Sequence();
 
+        _fripSE.PlayOneShot(_fripSE.clip);
 
         seq.Append(
             _rectTransform

@@ -50,6 +50,7 @@ public class SelectCardInitializer : MonoBehaviour
                 card.transform.localPosition = new Vector3(350f, -150f * (i - 2 - 5), 0);
                 card.ChangeCardColor(TeamColor.BLUE);
                 //データ
+                Debug.Log("blue i - 5" + (i - 5));
                 card.CardAttribute = DataSender.Instance.data.GetCardAttributeInSelectCardList(TeamColor.BLUE, i - 5);
             };
 
