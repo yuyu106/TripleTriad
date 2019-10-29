@@ -70,7 +70,7 @@ public class RandomCardSetter : MonoBehaviour
             Debug.Log("Size" + numbers.Count);
             int index = rnd.Next(numbers.Count);
             int num = numbers[index];
-            numbers.Remove(index);
+            numbers.RemoveAt(index);
 
             Debug.Log(index);
 

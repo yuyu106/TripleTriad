@@ -113,7 +113,18 @@ public class GameMaster : MonoBehaviour
         score.RedScore = _redScoreText.text;
         score.BlueScore = _blueScoreText.text;
 
+        yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene("Result");
+    }
+
+   /*
+    * 前のカードが捲られ終わっててからコンボする
+    */
+    private IEnumerator ComboWaitCoRoutine(int target)
+    {
+        yield return new WaitForSeconds(0.8f);
+        CompareCombo(target);
+
     }
 
     private IEnumerator TextSetCoRoutine(TeamColor teamColor)
@@ -170,7 +181,7 @@ public class GameMaster : MonoBehaviour
     }
 
     //隣り合うカードと比較
-    public void Compare(int targetCardIndex)
+    public void CompareCard(int targetCardIndex)
     {
         int row = targetCardIndex / _gridNum;
         int col = targetCardIndex % _gridNum;
@@ -231,9 +242,171 @@ public class GameMaster : MonoBehaviour
 
     private void ChangeNextCardColor(CardAttribute target , CardAction next)
     {
+        next.CardAttribute.TeamColor = target.TeamColor;
+
         isFripping = true;
         next.FripCard(target.TeamColor);
+    }
 
-        next.CardAttribute.TeamColor = target.TeamColor;
+    //隣り合うカードと比較,数の等しい辺が2つ以上あればひっくり返す
+    public void ComparePlus(int targetCardIndex)
+    {
+        int row = targetCardIndex / _gridNum;
+        int col = targetCardIndex % _gridNum;
+
+        int rightSum = 0;
+        int leftSum = 0;
+        int BottumSum = 0;
+        int TopSum = 0;
+
+        Debug.Log(row + " " + col);
+
+        CardAttribute targetCardAttribute = _cardAttributeOnTileArray[col, row].CardAttribute;
+
+        //righit
+        if (col + 1 < _gridNum && _cardAttributeOnTileArray[col + 1, row] != null)
+        {
+            CardAction rightCard = _cardAttributeOnTileArray[col + 1, row];
+
+
+            if (targetCardAttribute.TeamColor != rightCard.CardAttribute.TeamColor)
+            {
+                rightSum = targetCardAttribute.Right + rightCard.CardAttribute.Left;
+            }
+        }
+
+        //left
+        if (col - 1 >= 0 && _cardAttributeOnTileArray[col - 1, row] != null)
+        {
+            CardAction leftCard = _cardAttributeOnTileArray[col - 1, row];
+
+
+            if (targetCardAttribute.TeamColor != leftCard.CardAttribute.TeamColor)
+            {
+                leftSum = targetCardAttribute.Left + leftCard.CardAttribute.Right;
+            }
+        }
+
+        //top
+        if (row + 1 < _gridNum && _cardAttributeOnTileArray[col, row + 1] != null)
+        {
+            CardAction topCard = _cardAttributeOnTileArray[col, row + 1];
+
+            if (targetCardAttribute.TeamColor != topCard.CardAttribute.TeamColor)
+            {
+
+                TopSum = targetCardAttribute.Top + topCard.CardAttribute.Bottom;
+            }
+        }
+
+        //bottom
+        if (row - 1 >= 0 && _cardAttributeOnTileArray[col, row - 1] != null)
+        {
+            CardAction bottomCard = _cardAttributeOnTileArray[col, row - 1];
+
+
+            if (targetCardAttribute.TeamColor != bottomCard.CardAttribute.TeamColor)
+            {
+                BottumSum = targetCardAttribute.Bottom + bottomCard.CardAttribute.Top;
+            }
+        }
+
+        if (rightSum != 0 && (rightSum == leftSum || rightSum ==  TopSum || rightSum ==  BottumSum))
+        {
+            ChangeNextCardColor(targetCardAttribute, _cardAttributeOnTileArray[col + 1, row]);
+
+            StartCoroutine(ComboWaitCoRoutine(targetCardIndex + 1));
+        }
+
+        if (leftSum != 0 && (leftSum == rightSum || leftSum == TopSum || leftSum == BottumSum))
+        {
+            ChangeNextCardColor(targetCardAttribute, _cardAttributeOnTileArray[col - 1, row]);
+
+            StartCoroutine(ComboWaitCoRoutine(targetCardIndex - 1));
+        }
+
+        if (TopSum != 0 && (TopSum == leftSum || rightSum == TopSum || TopSum == BottumSum))
+        {
+            ChangeNextCardColor(targetCardAttribute, _cardAttributeOnTileArray[col, row + 1]);
+
+            StartCoroutine(ComboWaitCoRoutine(targetCardIndex + _gridNum));
+        }
+
+        if (BottumSum != 0 && (BottumSum == leftSum || BottumSum == rightSum || TopSum == BottumSum))
+        {
+            ChangeNextCardColor(targetCardAttribute, _cardAttributeOnTileArray[col, row - 1]);
+
+            StartCoroutine(ComboWaitCoRoutine(targetCardIndex - _gridNum));
+        }
+
+        CompareCard(targetCardIndex);
+    }
+
+
+    //隣り合うカードと比較 コンボ
+    private void CompareCombo(int targetCardIndex)
+    {
+        int row = targetCardIndex / _gridNum;
+        int col = targetCardIndex % _gridNum;
+
+        Debug.Log(row + " " + col);
+
+        CardAttribute targetCardAttribute = _cardAttributeOnTileArray[col, row].CardAttribute;
+
+        //righit
+        if (col + 1 < _gridNum && _cardAttributeOnTileArray[col + 1, row] != null)
+        {
+            CardAction rightCard = _cardAttributeOnTileArray[col + 1, row];
+
+
+            if (targetCardAttribute.Right > rightCard.CardAttribute.Left && targetCardAttribute.TeamColor != rightCard.CardAttribute.TeamColor)
+            {
+                ChangeNextCardColor(targetCardAttribute, rightCard);
+                StartCoroutine(ComboWaitCoRoutine(targetCardIndex + 1));
+            }
+        }
+
+        //left
+        if (col - 1 >= 0 && _cardAttributeOnTileArray[col - 1, row] != null)
+        {
+            CardAction leftCard = _cardAttributeOnTileArray[col - 1, row];
+
+
+            if (targetCardAttribute.Left > leftCard.CardAttribute.Right && targetCardAttribute.TeamColor != leftCard.CardAttribute.TeamColor)
+            {
+                ChangeNextCardColor(targetCardAttribute, leftCard);
+                StartCoroutine(ComboWaitCoRoutine(targetCardIndex - 1));
+            }
+        }
+
+        //top
+        if (row + 1 < _gridNum && _cardAttributeOnTileArray[col, row + 1] != null)
+        {
+            CardAction topCard = _cardAttributeOnTileArray[col, row + 1];
+
+            if (targetCardAttribute.Top > topCard.CardAttribute.Bottom && targetCardAttribute.TeamColor != topCard.CardAttribute.TeamColor)
+            {
+
+                ChangeNextCardColor(targetCardAttribute, topCard);
+                StartCoroutine(ComboWaitCoRoutine(targetCardIndex + _gridNum));
+            }
+        }
+
+        //bottom
+        if (row - 1 >= 0 && _cardAttributeOnTileArray[col, row - 1] != null)
+        {
+            CardAction bottomCard = _cardAttributeOnTileArray[col, row - 1];
+
+
+            if (targetCardAttribute.Bottom > bottomCard.CardAttribute.Top && targetCardAttribute.TeamColor != bottomCard.CardAttribute.TeamColor)
+            {
+                ChangeNextCardColor(targetCardAttribute, bottomCard);
+                StartCoroutine(ComboWaitCoRoutine(targetCardIndex - _gridNum));
+            }
+        }
+
     }
 }
+
+
+

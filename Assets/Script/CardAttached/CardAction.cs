@@ -113,9 +113,10 @@ public class CardAction : MonoBehaviour
 
             //タイルと対応する番号に情報入れてあげる
             _gameMaster.AddCardAttributeOnTileArray(position.Item3, this);
-         
+
             //隣と比べたりする
-            _gameMaster.Compare(cardIndex);
+            //            _gameMaster.CompareCard(cardIndex);
+            _gameMaster.ComparePlus(cardIndex);
             //プレイヤー交代
             _gameMaster.ChangeSelectableCards(teamColor);
 
