@@ -41,3 +41,21 @@ public class ScoreSender
         }
     }
 }
+
+public class SpecialRulesSender
+{
+    public bool[] SettingRuleList = new bool[(int)SpecialRules.LAST];
+
+    private static SpecialRulesSender _instance;
+    public static SpecialRulesSender Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new SpecialRulesSender();
+            }
+            return _instance;
+        }
+    }
+}

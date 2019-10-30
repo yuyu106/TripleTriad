@@ -339,7 +339,6 @@ public class GameMaster : MonoBehaviour
             StartCoroutine(ComboWaitCoRoutine(targetCardIndex - _gridNum));
         }
 
-        CompareCard(targetCardIndex);
     }
 
 

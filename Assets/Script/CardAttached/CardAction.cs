@@ -115,8 +115,13 @@ public class CardAction : MonoBehaviour
             _gameMaster.AddCardAttributeOnTileArray(position.Item3, this);
 
             //隣と比べたりする
-            //            _gameMaster.CompareCard(cardIndex);
-            _gameMaster.ComparePlus(cardIndex);
+            if (SpecialRulesSender.Instance.SettingRuleList[(int)SpecialRules.PLUS])
+            {
+                _gameMaster.ComparePlus(cardIndex);
+            }
+          
+            _gameMaster.CompareCard(cardIndex);
+
             //プレイヤー交代
             _gameMaster.ChangeSelectableCards(teamColor);
 
