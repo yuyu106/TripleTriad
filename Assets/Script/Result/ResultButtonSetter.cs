@@ -9,12 +9,22 @@ public class ResultButtonSetter : MonoBehaviour
     [SerializeField]
     private OnClickListener _toSelect;
     [SerializeField]
+    private RandomCardSetter _random;
+    [SerializeField]
     private OnClickListener _toTitle;
 
     // Start is called before the first frame update
     void Awake()
     {
-        _toSelect.OnPointerClickCallback = ToSelectScreen;
+        if(SpecialRulesSender.Instance.SettingRuleList[(int)SpecialRules.RANDOM] != true){
+            _toSelect.OnPointerClickCallback = ToSelectScreen;
+            _random.enabled = false;
+        }
+        else
+        {
+            _random.enabled = true;
+        }
+        
         _toTitle.OnPointerClickCallback = ToTitleScreen;
     }
 
@@ -26,6 +36,7 @@ public class ResultButtonSetter : MonoBehaviour
 
     public void ToSelectScreen(GameObject game)
     {
+
         SceneManager.LoadScene("SelectRed");
     }
 

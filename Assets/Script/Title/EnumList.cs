@@ -5,6 +5,8 @@ using UnityEngine;
 public enum SpecialRules
 {
     PLUS,
+    SAME,
+    RANDOM,
     LAST
 };
 

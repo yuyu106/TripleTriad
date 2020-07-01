@@ -15,16 +15,25 @@ public class RandomCardSetter : MonoBehaviour
     private int start = 0;
     private int end = 10;
 
-    List<int> numbers;
+    private List<int> numbers;
 
     [SerializeField]
     private OnClickListener _onClick;
 
+    RandomCardSetter()
+    {
+
+    }
+    RandomCardSetter(OnClickListener onClick)
+    {
+        _onClick = onClick;
+    }
     // Start is called before the first frame update
     void Awake()
     {
         _onClick.OnPointerClickCallback = RandomModeButtonListener;
     }
+    
 
     // Update is called once per frame
     void Update()
@@ -34,6 +43,9 @@ public class RandomCardSetter : MonoBehaviour
 
     public void RandomModeButtonListener(GameObject gameObject)
     {
+        //ランダムモード
+        SpecialRulesSender.Instance.SettingRuleList[(int)SpecialRules.RANDOM] = true;
+
         //csvにカードの強さ情報入ってるよ
         _csvFile = Resources.Load("CardData") as TextAsset;
         StringReader reader = new StringReader(_csvFile.text);

@@ -119,7 +119,12 @@ public class CardAction : MonoBehaviour
             {
                 _gameMaster.ComparePlus(cardIndex);
             }
-          
+
+            if (SpecialRulesSender.Instance.SettingRuleList[(int)SpecialRules.SAME])
+            {
+                _gameMaster.CompareSame(cardIndex);
+            }
+
             _gameMaster.CompareCard(cardIndex);
 
             //プレイヤー交代

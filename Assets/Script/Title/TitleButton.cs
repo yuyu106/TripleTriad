@@ -21,6 +21,8 @@ public class TitleButton : MonoBehaviour
 
     public void OnClickCallback(GameObject game)
     {
+        //ランダムモード解除
+        SpecialRulesSender.Instance.SettingRuleList[(int)SpecialRules.RANDOM] =　false;
         SceneManager.LoadScene("SelectRed");
     }
 }

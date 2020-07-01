@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class SettingPanelOpener : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class SettingPanelOpener : MonoBehaviour
 
     [SerializeField]
     private OnClickListener _onClick;
+
+    private bool Showing;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -17,6 +21,17 @@ public class SettingPanelOpener : MonoBehaviour
 
     public void OnClick(GameObject gameObject)
     {
-        board.localPosition = new Vector2(-20, 300);
+        if (Showing != true)
+        {
+            Showing = true;
+            board.DOLocalMoveY(0f, 1f).SetEase(Ease.OutBounce);
+        }
+
+        else
+        {
+            Showing = false;
+            board.DOLocalMoveY(750, 0.5f);                
+        }
+
     }
 }
